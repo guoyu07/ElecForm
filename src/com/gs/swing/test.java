@@ -19,11 +19,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
 import com.gs.DAO.ElecDAO;
 import com.gs.chart.MakeChart;
 import com.gs.model.Elec;
+import com.gs.util.ElecDataCommiter;
 import com.gs.util.ExceptionReader;
 import com.gs.util.Export2Excel;
 import com.gs.util.JavaMail;
@@ -47,6 +49,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JToggleButton;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 /**
  * 
@@ -578,9 +581,45 @@ public class test extends javax.swing.JFrame {
 		scrollPane.setViewportView(table_1);
 		progressBar.setValue(100);
 		lblNewLabel.setIcon(new ImageIcon("D://Elec//chart3333.jpg"));
-		textArea.append("\n表格刷新和图表成功");
+		textArea.append("\n表格刷新和图表成功\n正在向服务器同步数据,请稍候");
 		textArea.paintImmediately(textArea.getBounds());
 
+		ElecDataCommiter commiter = new ElecDataCommiter();
+		int commitcode = 0;
+		try {
+			commitcode = commiter.commit(elec);
+		} catch (HttpException e) {
+			logger.error("\n网络异常\n异常原因:\n"+e.getMessage());
+			textArea.append("\n网络异常\n异常原因:\n"+e.getMessage());
+			textArea.paintImmediately(textArea.getBounds());
+		} catch (IOException e) {
+			logger.error("\n未知异常\n异常原因:\n"+e.getMessage());
+			textArea.append("\n未知异常\n异常原因:\n"+e.getMessage());
+			textArea.paintImmediately(textArea.getBounds());
+		}
+		String info = "";
+		switch (commitcode){
+		    case 820: 
+		    	info = ("\n数据同步正常\n");
+		        break;
+		    case 810:
+		    	info = ("\n已向服务器端更新数据\n");
+		        break;
+		    case 880: 
+		    	info = ("\n数据库错误\n");
+		        break;
+		    case 890: 
+		    	info = ("\nJson格式错误\n");
+		        break;
+		   default :
+			   info = ("\n未知异常\n异常原因:\n");
+		}
+		logger.info("向数据库同步时数据,结果: "+info);
+		textArea.append(info);
+		textArea.paintImmediately(textArea.getBounds());
+		
+		
+		
 	}
 
 	/**
