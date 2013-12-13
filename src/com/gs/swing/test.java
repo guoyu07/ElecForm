@@ -611,6 +611,9 @@ public class test extends javax.swing.JFrame {
 		    case 890: 
 		    	info = ("\nJson格式错误\n");
 		        break;
+		    case 403: 
+		    	info = ("\n权限不足,服务器拒绝数据\n");
+		        break;
 		   default :
 			   info = ("\n未知异常\n异常原因:\n");
 		}
