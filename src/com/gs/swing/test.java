@@ -8,6 +8,7 @@ package com.gs.swing;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +64,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.Color;
 
 /**
  * 
@@ -362,6 +364,29 @@ public class test extends javax.swing.JFrame {
 		textArea_1.setFont(new Font("微软雅黑", Font.BOLD, 20));
 		textArea_1.setEditable(false);
 		textArea_1.setLineWrap(true);
+		
+		JButton button_1 = new JButton("\u5220\u9664\u4ECA\u65E5\u6570\u636E");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Date r = new Date(System.currentTimeMillis()); // 结果
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				int m = Integer.valueOf(sdf.format(r));
+				textArea_1.append("请稍候\n");
+				try {
+					d.delete(m);
+					logger.info("删除" + m);
+				} catch (SQLException e1) {
+					textArea_1.append("没有日期为"
+							+ m + "记录"
+							+ "\n错误信息：\n" + e1.getMessage());
+					logger.error(e1.getMessage());
+					e1.printStackTrace();
+				} 
+				textArea_1.append("已删除\n" + m);
+			}
+		});
+		button_1.setForeground(Color.RED);
+		button_1.setFont(new Font("微软雅黑", Font.BOLD, 29));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -376,11 +401,13 @@ public class test extends javax.swing.JFrame {
 							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addGap(386)
-							.addComponent(btnNewButton))
+							.addComponent(btnNewButton)
+							.addGap(70)
+							.addComponent(button_1))
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addGap(192)
 							.addComponent(textArea_1, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(153, Short.MAX_VALUE))
+					.addContainerGap(163, Short.MAX_VALUE))
 		);
 		gl_panel_1.setVerticalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -395,7 +422,9 @@ public class test extends javax.swing.JFrame {
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
 							.addGap(30)))
-					.addComponent(btnNewButton)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnNewButton)
+						.addComponent(button_1))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(textArea_1, GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
 					.addContainerGap())
@@ -451,145 +480,139 @@ public class test extends javax.swing.JFrame {
 	}
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-		progressBar.setMaximum(100);
-		progressBar.setMinimum(0);
-		textArea.setText("请稍候\n");
-		textArea.paintImmediately(textArea.getBounds());
-		progressBar.setValue(10);
-		int elecnum = (Integer.parseInt(jTextField1.getText()));
-		if (jTextField2.getText().equals(""))
-			jTextField2.setText("0");
-		int inputelec = (Integer.parseInt(jTextField2.getText()));
-		Elec elec = null;
-		ElecDAO dao = null;
-		progressBar.setValue(20);
-		int used = 0;
-		try {
-			elec = new Elec();
-			elec.setDay(Integer.valueOf(new SimpleDateFormat("d")
-					.format(new Date(System.currentTimeMillis()))));
-			elec.setElecnum(elecnum);
-			elec.setMonth(Integer.valueOf(new SimpleDateFormat("M")
-					.format(new Date(System.currentTimeMillis()))));
-			elec.setYear(Integer.valueOf(new SimpleDateFormat("yyyy")
-					.format(new Date(System.currentTimeMillis()))));
-			elec.setDate((Integer.valueOf(new SimpleDateFormat("yyyyMMdd")
-					.format(new Date(System.currentTimeMillis())))));
-			elec.setInputelec(inputelec);
-			used = 0;
-			dao = new ElecDAO();
-			Elec be = dao.getBefore(Integer.valueOf(new SimpleDateFormat(
-					"yyyyMMdd").format(new Date(System.currentTimeMillis()))));
-			if (elecnum < be.getElecnum()) {
-				used = be.getElecnum() - elecnum; // 一般情況，或者先讀數后充值
-			} else {
-				used = be.getElecnum() - (elecnum - inputelec); // 先充值后度數
-			}
-			elec.setUsed(used);
-			dao.save(elec);
-			progressBar.setValue(40);
-			textArea.append("成功\n");
-			textArea.paintImmediately(textArea.getBounds());
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				progressBar.setMaximum(100);
+				progressBar.setMinimum(0);
+				textArea.setText("请稍候\n");
+				progressBar.setValue(10);
+				int elecnum = (Integer.parseInt(jTextField1.getText()));
+				if (jTextField2.getText().equals(""))
+					jTextField2.setText("0");
+				int inputelec = (Integer.parseInt(jTextField2.getText()));
+				Elec elec = null;
+				ElecDAO dao = null;
+				progressBar.setValue(20);
+				int used = 0;
+				try {
+					elec = new Elec();
+					elec.setDay(Integer.valueOf(new SimpleDateFormat("d")
+							.format(new Date(System.currentTimeMillis()))));
+					elec.setElecnum(elecnum);
+					elec.setMonth(Integer.valueOf(new SimpleDateFormat("M")
+							.format(new Date(System.currentTimeMillis()))));
+					elec.setYear(Integer.valueOf(new SimpleDateFormat("yyyy")
+							.format(new Date(System.currentTimeMillis()))));
+					elec.setDate((Integer.valueOf(new SimpleDateFormat("yyyyMMdd")
+							.format(new Date(System.currentTimeMillis())))));
+					elec.setInputelec(inputelec);
+					used = 0;
+					dao = new ElecDAO();
+					Elec be = dao.getBefore(Integer.valueOf(new SimpleDateFormat(
+							"yyyyMMdd").format(new Date(System.currentTimeMillis()))));
+					if (elecnum < be.getElecnum()) {
+						used = be.getElecnum() - elecnum; // 一般情況，或者先讀數后充值
+					} else {
+						used = be.getElecnum() - (elecnum - inputelec); // 先充值后度數
+					}
+					elec.setUsed(used);
+					dao.save(elec);
+					progressBar.setValue(40);
+					textArea.append("成功\n");
 
-			textArea.append("今日用电" + used + "\n");
-			textArea.paintImmediately(textArea.getBounds());
-			List<Elec> list = dao.getCurrentMonthElecs();
-			int monthsum = 0;
-			Iterator<Elec> it = list.iterator();
-			while (it.hasNext()) {
-				monthsum += it.next().getUsed();
-			}
-			progressBar.setValue(60);
-			textArea.append("截至今日，本月用电：" + monthsum + "\n");
-			textArea.paintImmediately(textArea.getBounds());
-			float avg = (Float.parseFloat(new SimpleDateFormat("dd")
-					.format(new Date(System.currentTimeMillis()))));
-			textArea.append("本月平均每日用电：" + (monthsum) / avg + "\n");
-			textArea.paintImmediately(textArea.getBounds());
-			progressBar.setValue(80);
-			logger.info("Today elecnum = " + elecnum + "  used = " + used
-					+ "  input = " + inputelec + " Avg = " + avg);
-			/*
-			 * new JavaMail().doSendHtmlEmail( "今日电量已输入，通过Client",
-			 * "Today elecnum = " + elecnum + "  used = " + used + "  input = "
-			 * + inputelec + new ExceptionReader().read(), "63388@qq.com");
-			 */
-			progressBar.setValue(90);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			if (e.getMessage().matches(
-					"Duplicate entry '(.*?)' for key 'PRIMARY'")) {
-				textArea.append("失败\n失败原因:今日已经输入过了\n");
-				textArea.paintImmediately(textArea.getBounds());
-			} else {
-				textArea.append("失败\n无法预料的失败原因:" + e.getMessage() + "\n");
-				textArea.paintImmediately(textArea.getBounds());
-			}
-			new JavaMail().doSendHtmlEmail("输入失败",
-					e.getMessage() + "\n" + elec.toString(), "63388@qq.com");
-		}
-		textArea.append("正在刷新表格和图表，请稍候。");
-		textArea.paintImmediately(textArea.getBounds());
-		MakeChart c = new MakeChart();
-		ElecDAO d = new ElecDAO();
-		try {
-			c.make(d.getCurrentMonthElecs());
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
-		List<Elec> list = d.getElecs();
-		Object[][] tableData = new Object[list.size()][6];
-		Object[] columnTitle = { "年", "月", "日", "用电量", "当天电量", "充值" };
-		for (int i = 0; i < list.size(); i++) {
-			Elec e = list.get(i);
-			tableData[i] = new Object[] { e.getYear(), e.getMonth(),
-					e.getDay(), e.getUsed(), e.getElecnum(), e.getInputelec() };
-		}
-		table_1 = new JTable(tableData, columnTitle);
-		table_1.setFont(new Font("Segoe UI", Font.BOLD, 17));
-		scrollPane.setViewportView(table_1);
-		progressBar.setValue(100);
-		lblNewLabel.setIcon(new ImageIcon("D://Elec//chart3333.jpg"));
-		textArea.append("\n表格刷新和图表成功\n正在向服务器同步数据,请稍候");
-		textArea.paintImmediately(textArea.getBounds());
+					textArea.append("今日用电" + used + "\n");
+					List<Elec> list = dao.getCurrentMonthElecs();
+					int monthsum = 0;
+					Iterator<Elec> it = list.iterator();
+					while (it.hasNext()) {
+						monthsum += it.next().getUsed();
+					}
+					progressBar.setValue(50);
+					textArea.append("截至今日，本月用电：" + monthsum + "\n");
+					float avg = (Float.parseFloat(new SimpleDateFormat("dd")
+							.format(new Date(System.currentTimeMillis()))));
+					textArea.append("本月平均每日用电：" + (monthsum) / avg + "\n");
+					progressBar.setValue(60);
+					logger.info("Today elecnum = " + elecnum + "  used = " + used
+							+ "  input = " + inputelec + " Avg = " + avg);
+					progressBar.setValue(70);
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					if (e.getMessage().matches(
+							"Duplicate entry '(.*?)' for key 'PRIMARY'")) {
+						textArea.append("失败\n失败原因:今日已经输入过了\n");
+					} else {
+						textArea.append("失败\n无法预料的失败原因:" + e.getMessage() + "\n");
+					}
+					new JavaMail().doSendHtmlEmail("输入失败",
+							e.getMessage() + "\n" + elec.toString(), "63388@qq.com");
+				}
+				textArea.append("正在刷新表格和图表，请稍候。");
+				MakeChart c = new MakeChart();
+				ElecDAO d = new ElecDAO();
+				try {
+					c.make(d.getCurrentMonthElecs());
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					e.printStackTrace();
+				}
+				List<Elec> list = d.getElecs();
+				Object[][] tableData = new Object[list.size()][6];
+				Object[] columnTitle = { "年", "月", "日", "用电量", "当天电量", "充值" };
+				for (int i = 0; i < list.size(); i++) {
+					Elec e = list.get(i);
+					tableData[i] = new Object[] { e.getYear(), e.getMonth(),
+							e.getDay(), e.getUsed(), e.getElecnum(), e.getInputelec() };
+				}
+				table_1 = new JTable(tableData, columnTitle);
+				table_1.setFont(new Font("Segoe UI", Font.BOLD, 17));
+				scrollPane.setViewportView(table_1);
+				progressBar.setValue(80);
+				lblNewLabel.setIcon(new ImageIcon("D://Elec//chart3333.jpg"));
+				textArea.append("\n表格刷新和图表成功\n正在向服务器同步数据,请稍候");
 
-		ElecDataCommiter commiter = new ElecDataCommiter();
-		int commitcode = 0;
-		try {
-			commitcode = commiter.commit(elec);
-		} catch (HttpException e) {
-			logger.error("\n网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
-			textArea.append("\n由于网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
-			textArea.paintImmediately(textArea.getBounds());
-		} catch (IOException e) {
-			logger.error("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
-			textArea.append("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
-			textArea.paintImmediately(textArea.getBounds());
-		}
-		String info = "";
-		switch (commitcode) {
-		case 820:
-			info = ("\n数据同步正常\n");
-			break;
-		case 810:
-			info = ("\n已向服务器端更新数据\n");
-			break;
-		case 880:
-			info = ("\n数据库错误\n");
-			break;
-		case 890:
-			info = ("\nJson格式错误\n");
-			break;
-		case 403:
-			info = ("\n权限不足,服务器拒绝数据\n");
-			break;
-		default:
-			info = ("\n未知异常\n");
-		}
-		logger.info("向数据库同步时数据,结果: " + info);
-		textArea.append(info);
-		textArea.paintImmediately(textArea.getBounds());
+				ElecDataCommiter commiter = new ElecDataCommiter();
+				int commitcode = 0;
+				try {
+					commitcode = commiter.commit(elec);
+				} catch (HttpException e) {
+					logger.error("\n网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
+					textArea.append("\n由于网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
+				} catch (IOException e) {
+					logger.error("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
+					textArea.append("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
+				}
+				progressBar.setValue(90);
+				String info = "";
+				switch (commitcode) {
+				case 820:
+					info = ("\n数据同步正常\n");
+					break;
+				case 810:
+					info = ("\n已向服务器端更新数据\n");
+					break;
+				case 880:
+					info = ("\n数据库错误\n");
+					break;
+				case 890:
+					info = ("\nJson格式错误\n");
+					break;
+				case 403:
+					info = ("\n权限不足,服务器拒绝数据\n");
+					break;
+				default:
+					info = ("\n未知异常\n");
+				}
+				logger.info("向数据库同步时数据,结果: " + info);
+				textArea.append(info);
+				progressBar.setValue(100);
+				
+			}
+		});
+		t.start();
+		
 
 	}
 
