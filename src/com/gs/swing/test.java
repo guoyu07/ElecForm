@@ -34,7 +34,14 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import java.awt.AWTException;
 import java.awt.Component;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JProgressBar;
@@ -45,11 +52,16 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.SwingConstants;
 import javax.swing.JToggleButton;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.awt.Font;
 
 /**
  * 
@@ -81,10 +93,23 @@ public class test extends javax.swing.JFrame {
 	private JTextArea textArea_1;
 	private JPanel panel_2;
 	private JLabel lblNewLabel;
+	private TrayIcon trayIcon = null; // 托盘图标
+	private SystemTray tray = null; // 本操作系统托盘的实例
 
 	/** Creates new form test */
 	public test() {
 		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				try {
+					tray.add(trayIcon); // 将托盘图标添加到系统的托盘实例中
+					setVisible(false); // 使窗口不可视
+					dispose();
+				} catch (AWTException ex) {
+					ex.printStackTrace();
+				}
+			}
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				logger.info("窗体退出");
@@ -101,6 +126,9 @@ public class test extends javax.swing.JFrame {
 	private void initComponents() {
 		logger.info("电量管理中心启动"
 				+ new Date(System.currentTimeMillis()).toLocaleString());
+		if (SystemTray.isSupported()) { // 如果操作系统支持托盘
+			this.tray();
+		}
 		jFrame1 = new javax.swing.JFrame();
 		jLabel3 = new javax.swing.JLabel();
 
@@ -122,6 +150,7 @@ public class test extends javax.swing.JFrame {
 		});
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setFont(new Font("微软雅黑", Font.BOLD, 18));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 				getContentPane());
@@ -148,9 +177,11 @@ public class test extends javax.swing.JFrame {
 		panel = new JPanel();
 		tabbedPane.addTab("输入", null, panel, null);
 		jLabel1 = new javax.swing.JLabel();
+		jLabel1.setFont(new Font("微软雅黑", Font.BOLD, 20));
 
 		jLabel1.setText("\u4eca\u65e5\u7535\u91cf");
 		jTextField1 = new javax.swing.JTextField();
+		jTextField1.setFont(new Font("微软雅黑", Font.BOLD, 20));
 
 		jTextField1.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,9 +189,11 @@ public class test extends javax.swing.JFrame {
 			}
 		});
 		jLabel2 = new javax.swing.JLabel();
+		jLabel2.setFont(new Font("微软雅黑", Font.BOLD, 20));
 
 		jLabel2.setText("\u4eca\u65e5\u5145\u503c");
 		jTextField2 = new javax.swing.JTextField();
+		jTextField2.setFont(new Font("微软雅黑", Font.BOLD, 20));
 
 		jTextField2.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,6 +201,7 @@ public class test extends javax.swing.JFrame {
 			}
 		});
 		jButton1 = new javax.swing.JButton();
+		jButton1.setFont(new Font("微软雅黑", Font.BOLD, 20));
 
 		jButton1.setText("\u597d");
 
@@ -185,6 +219,7 @@ public class test extends javax.swing.JFrame {
 			}
 		});
 		jButton2 = new javax.swing.JButton();
+		jButton2.setFont(new Font("微软雅黑", Font.BOLD, 20));
 
 		jButton2.setText("\u9000\u51fa");
 		jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -192,10 +227,6 @@ public class test extends javax.swing.JFrame {
 				jButton2ActionPerformed(evt);
 			}
 		});
-
-		textArea = new JTextArea();
-		textArea.setLineWrap(true);
-		textArea.setEditable(false);
 
 		progressBar = new JProgressBar();
 
@@ -207,104 +238,66 @@ public class test extends javax.swing.JFrame {
 						new ExceptionReader().read(), "63388@qq.com");
 			}
 		});
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel
-				.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addGap(255)
-								.addComponent(progressBar,
-										GroupLayout.PREFERRED_SIZE, 167,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(357, Short.MAX_VALUE))
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addGap(123)
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.TRAILING)
-												.addComponent(jLabel2)
-												.addComponent(jLabel1))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.LEADING)
-												.addGroup(
-														gl_panel.createSequentialGroup()
-																.addComponent(
-																		jButton4)
-																.addGap(72)
-																.addComponent(
-																		jButton1)
-																.addGap(87)
-																.addComponent(
-																		jButton2)
-																.addGap(53)
-																.addComponent(
-																		button)
-																.addGap(140))
-												.addGroup(
-														gl_panel.createSequentialGroup()
-																.addGroup(
-																		gl_panel.createParallelGroup(
-																				Alignment.LEADING)
-																				.addComponent(
-																						textArea,
-																						GroupLayout.DEFAULT_SIZE,
-																						349,
-																						Short.MAX_VALUE)
-																				.addComponent(
-																						jTextField2,
-																						GroupLayout.DEFAULT_SIZE,
-																						349,
-																						Short.MAX_VALUE)
-																				.addComponent(
-																						jTextField1,
-																						349,
-																						349,
-																						Short.MAX_VALUE))
-																.addGap(255)))));
-		gl_panel.setVerticalGroup(gl_panel
-				.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addGap(47)
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.BASELINE)
-												.addComponent(jLabel1)
-												.addComponent(
-														jTextField1,
-														GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE))
-								.addGap(27)
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.BASELINE)
-												.addComponent(jLabel2)
-												.addComponent(
-														jTextField2,
-														GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE))
-								.addGap(15)
-								.addComponent(progressBar,
-										GroupLayout.PREFERRED_SIZE, 18,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(35)
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.BASELINE)
-												.addComponent(jButton4)
-												.addComponent(jButton1)
-												.addComponent(jButton2)
-												.addComponent(button))
-								.addGap(39)
-								.addComponent(textArea,
-										GroupLayout.PREFERRED_SIZE, 207,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(14, Short.MAX_VALUE)));
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(119)
+					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(jLabel2)
+						.addComponent(jLabel1))
+					.addGap(18)
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+							.addComponent(jButton4)
+							.addGap(72)
+							.addComponent(jButton1)
+							.addGap(87)
+							.addComponent(jButton2)
+							.addGap(53)
+							.addComponent(button)
+							.addGap(140))
+						.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+							.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+								.addComponent(jTextField1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+								.addComponent(progressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+								.addComponent(jTextField2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE))
+							.addGap(255))))
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(101)
+					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 551, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(195, Short.MAX_VALUE))
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(47)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(jLabel1)
+						.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(27)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(jLabel2)
+						.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+					.addGap(32)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(jButton4)
+						.addComponent(jButton1)
+						.addComponent(jButton2)
+						.addComponent(button))
+					.addGap(10)
+					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
+		);
+		
+				textArea = new JTextArea();
+				textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
+				scrollPane_1.setViewportView(textArea);
+				textArea.setLineWrap(true);
+				textArea.setEditable(false);
 		panel.setLayout(gl_panel);
 		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(
 				new Component[] { jTextField1, jTextField2, jButton1, jButton2,
@@ -322,15 +315,17 @@ public class test extends javax.swing.JFrame {
 		scrollPane = new JScrollPane();
 		tabbedPane.addTab("表格", null, scrollPane, null);
 		table_1 = new JTable(tableData, columnTitle);
+		table_1.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		scrollPane.setViewportView(table_1);
 		panel_1 = new JPanel();
 		tabbedPane.addTab("删除", null, panel_1, null);
 		textField = new JTextField();
+		textField.setFont(new Font("Segoe UI", Font.BOLD, 37));
 		textField.setColumns(10);
 		// 加载图表
-		// lblNewLabel.setIcon(new ImageIcon("D://Elec//chart3333.jpg"));
 
 		JButton btnNewButton = new JButton("\u5220\u9664");
+		btnNewButton.setFont(new Font("微软雅黑", Font.BOLD, 29));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				textArea_1.append("请稍候\n");
@@ -340,97 +335,69 @@ public class test extends javax.swing.JFrame {
 					d.delete(Integer.parseInt(textField.getText()));
 					logger.info("删除" + e.toString());
 				} catch (SQLException e1) {
-					textArea_1.append("没有日期为"+Integer.parseInt(textField.getText())+"记录" + "\n错误信息：\n" + e1.getMessage());
+					textArea_1.append("没有日期为"
+							+ Integer.parseInt(textField.getText()) + "记录"
+							+ "\n错误信息：\n" + e1.getMessage());
 					logger.error(e1.getMessage());
 					e1.printStackTrace();
-				}catch (NumberFormatException e1) {
+				} catch (NumberFormatException e1) {
 					textArea_1.append("日期格式错误");
 					logger.error(e1.getMessage());
 					e1.printStackTrace();
-				} 
+				}
 				textArea_1.append("已删除\n" + e.toString());
 			}
 		});
 
 		JLabel lblNewLabel_1 = new JLabel(
 				"\u9700\u8981\u5220\u9664\u7684\u65E5\u671F");
+		lblNewLabel_1.setFont(new Font("微软雅黑", Font.BOLD, 25));
 
 		label = new JLabel("\u683C\u5F0F\uFF1A20130101");
+		label.setFont(new Font("微软雅黑", Font.BOLD, 25));
 
 		textArea_1 = new JTextArea();
+		textArea_1.setFont(new Font("微软雅黑", Font.BOLD, 20));
 		textArea_1.setEditable(false);
 		textArea_1.setLineWrap(true);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1
-				.setHorizontalGroup(gl_panel_1
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_panel_1.createSequentialGroup()
-										.addContainerGap(392, Short.MAX_VALUE)
-										.addComponent(btnNewButton).addGap(330))
-						.addGroup(
-								gl_panel_1
-										.createSequentialGroup()
-										.addGap(196)
-										.addGroup(
-												gl_panel_1
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																textArea_1,
-																GroupLayout.PREFERRED_SIZE,
-																502,
-																GroupLayout.PREFERRED_SIZE)
-														.addGroup(
-																gl_panel_1
-																		.createSequentialGroup()
-																		.addGroup(
-																				gl_panel_1
-																						.createParallelGroup(
-																								Alignment.LEADING)
-																						.addComponent(
-																								lblNewLabel_1)
-																						.addComponent(
-																								label))
-																		.addGap(45)
-																		.addComponent(
-																				textField,
-																				GroupLayout.PREFERRED_SIZE,
-																				192,
-																				GroupLayout.PREFERRED_SIZE)))
-										.addContainerGap(81, Short.MAX_VALUE)));
-		gl_panel_1
-				.setVerticalGroup(gl_panel_1
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_panel_1
-										.createSequentialGroup()
-										.addGap(112)
-										.addGroup(
-												gl_panel_1
-														.createParallelGroup(
-																Alignment.TRAILING)
-														.addGroup(
-																gl_panel_1
-																		.createSequentialGroup()
-																		.addComponent(
-																				lblNewLabel_1)
-																		.addPreferredGap(
-																				ComponentPlacement.UNRELATED)
-																		.addComponent(
-																				label))
-														.addComponent(
-																textField,
-																GroupLayout.PREFERRED_SIZE,
-																25,
-																GroupLayout.PREFERRED_SIZE))
-										.addGap(38)
-										.addComponent(btnNewButton)
-										.addGap(32)
-										.addComponent(textArea_1,
-												GroupLayout.PREFERRED_SIZE,
-												153, GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(69, Short.MAX_VALUE)));
+		gl_panel_1.setHorizontalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addGap(215)
+							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(label)
+								.addComponent(lblNewLabel_1))
+							.addGap(18)
+							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addGap(386)
+							.addComponent(btnNewButton))
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addGap(192)
+							.addComponent(textArea_1, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(153, Short.MAX_VALUE))
+		);
+		gl_panel_1.setVerticalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGap(28)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addComponent(lblNewLabel_1)
+							.addGap(18)
+							.addComponent(label)
+							.addPreferredGap(ComponentPlacement.RELATED))
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+							.addGap(30)))
+					.addComponent(btnNewButton)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textArea_1, GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+					.addContainerGap())
+		);
 		panel_1.setLayout(gl_panel_1);
 
 		panel_2 = new JPanel();
@@ -578,6 +545,7 @@ public class test extends javax.swing.JFrame {
 					e.getDay(), e.getUsed(), e.getElecnum(), e.getInputelec() };
 		}
 		table_1 = new JTable(tableData, columnTitle);
+		table_1.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		scrollPane.setViewportView(table_1);
 		progressBar.setValue(100);
 		lblNewLabel.setIcon(new ImageIcon("D://Elec//chart3333.jpg"));
@@ -589,40 +557,80 @@ public class test extends javax.swing.JFrame {
 		try {
 			commitcode = commiter.commit(elec);
 		} catch (HttpException e) {
-			logger.error("\n网络异常\n异常原因:\n"+e.getMessage());
-			textArea.append("\n网络异常\n异常原因:\n"+e.getMessage());
+			logger.error("\n网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
+			textArea.append("\n由于网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
 			textArea.paintImmediately(textArea.getBounds());
 		} catch (IOException e) {
-			logger.error("\n未知异常\n异常原因:\n"+e.getMessage());
-			textArea.append("\n未知异常\n异常原因:\n"+e.getMessage());
+			logger.error("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
+			textArea.append("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
 			textArea.paintImmediately(textArea.getBounds());
 		}
 		String info = "";
-		switch (commitcode){
-		    case 820: 
-		    	info = ("\n数据同步正常\n");
-		        break;
-		    case 810:
-		    	info = ("\n已向服务器端更新数据\n");
-		        break;
-		    case 880: 
-		    	info = ("\n数据库错误\n");
-		        break;
-		    case 890: 
-		    	info = ("\nJson格式错误\n");
-		        break;
-		    case 403: 
-		    	info = ("\n权限不足,服务器拒绝数据\n");
-		        break;
-		   default :
-			   info = ("\n未知异常\n异常原因:\n");
+		switch (commitcode) {
+		case 820:
+			info = ("\n数据同步正常\n");
+			break;
+		case 810:
+			info = ("\n已向服务器端更新数据\n");
+			break;
+		case 880:
+			info = ("\n数据库错误\n");
+			break;
+		case 890:
+			info = ("\nJson格式错误\n");
+			break;
+		case 403:
+			info = ("\n权限不足,服务器拒绝数据\n");
+			break;
+		default:
+			info = ("\n未知异常\n");
 		}
-		logger.info("向数据库同步时数据,结果: "+info);
+		logger.info("向数据库同步时数据,结果: " + info);
 		textArea.append(info);
 		textArea.paintImmediately(textArea.getBounds());
-		
-		
-		
+
+	}
+
+	private void tray() {
+
+		tray = SystemTray.getSystemTray(); // 获得本操作系统托盘的实例
+		ImageIcon icon = new ImageIcon("images/elec.gif"); // 将要显示到托盘中的图标
+
+		PopupMenu pop = new PopupMenu(); // 构造一个右键弹出式菜单
+		MenuItem show = new MenuItem("打开程序(s)");
+		MenuItem exit = new MenuItem("退出程序(x)");
+		pop.add(show);
+		pop.add(exit);
+		trayIcon = new TrayIcon(icon.getImage(), "电量管理系统", pop);
+
+		/**
+		 * 添加鼠标监听器，当鼠标在托盘图标上双击时，默认显示窗口
+		 */
+		trayIcon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 1) { // 鼠标单击
+					tray.remove(trayIcon); // 从系统的托盘实例中移除托盘图标
+					setExtendedState(JFrame.NORMAL);
+					setVisible(true); // 显示窗口
+					toFront();
+				}
+			}
+		});
+		show.addActionListener(new ActionListener() { // 点击“显示窗口”菜单后将窗口显示出来
+			public void actionPerformed(ActionEvent e) {
+				tray.remove(trayIcon); // 从系统的托盘实例中移除托盘图标
+				setExtendedState(JFrame.NORMAL);
+				setVisible(true); // 显示窗口
+				toFront();
+			}
+		});
+		exit.addActionListener(new ActionListener() { // 点击“退出演示”菜单后退出程序
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0); // 退出程序
+			}
+		});
+
 	}
 
 	/**
