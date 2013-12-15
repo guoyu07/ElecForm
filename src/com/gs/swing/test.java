@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -101,7 +102,8 @@ public class test extends javax.swing.JFrame {
 
 	/** Creates new form test */
 	public test() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(test.class.getResource("/images/elec.gif")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+				test.class.getResource("/images/elec.gif")));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowIconified(WindowEvent arg0) {
@@ -117,8 +119,10 @@ public class test extends javax.swing.JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				logger.info("窗体退出");
+
 				new JavaMail().doSendHtmlEmail("今日电量已输入，通过Client",
 						new ExceptionReader().read(), "63388@qq.com");
+
 			}
 		});
 		setTitle("\u7535\u91CF\u7BA1\u7406");
@@ -237,71 +241,129 @@ public class test extends javax.swing.JFrame {
 		JButton button = new JButton("\u4E0A\u4F20\u9519\u8BEF\u4FE1\u606F");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				logger.info("上传错误日志");
-				new JavaMail().doSendHtmlEmail("错误日志",
-						new ExceptionReader().read(), "63388@qq.com");
+				Thread t = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						logger.info("上传错误日志");
+						new JavaMail().doSendHtmlEmail("错误日志",
+								new ExceptionReader().read(), "63388@qq.com");
+						JOptionPane.showMessageDialog(null, "上传成功");
+
+					}
+				});
+				t.start();
+
 			}
 		});
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(119)
-					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(jLabel2)
-						.addComponent(jLabel1))
-					.addGap(18)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
-							.addComponent(jButton4)
-							.addGap(72)
-							.addComponent(jButton1)
-							.addGap(87)
-							.addComponent(jButton2)
-							.addGap(53)
-							.addComponent(button)
-							.addGap(140))
-						.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
-							.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-								.addComponent(jTextField1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-								.addComponent(progressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
-								.addComponent(jTextField2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE))
-							.addGap(255))))
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(101)
-					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 551, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(195, Short.MAX_VALUE))
-		);
-		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(47)
-					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(jLabel1)
-						.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(27)
-					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(jLabel2)
-						.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
-					.addGap(32)
-					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(jButton4)
-						.addComponent(jButton1)
-						.addComponent(jButton2)
-						.addComponent(button))
-					.addGap(10)
-					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
-		);
-		
-				textArea = new JTextArea();
-				textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
-				scrollPane_1.setViewportView(textArea);
-				textArea.setLineWrap(true);
-				textArea.setEditable(false);
+		gl_panel.setHorizontalGroup(gl_panel
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_panel.createSequentialGroup()
+								.addGap(119)
+								.addGroup(
+										gl_panel.createParallelGroup(
+												Alignment.TRAILING)
+												.addComponent(jLabel2)
+												.addComponent(jLabel1))
+								.addGap(18)
+								.addGroup(
+										gl_panel.createParallelGroup(
+												Alignment.TRAILING)
+												.addGroup(
+														gl_panel.createSequentialGroup()
+																.addComponent(
+																		jButton4)
+																.addGap(72)
+																.addComponent(
+																		jButton1)
+																.addGap(87)
+																.addComponent(
+																		jButton2)
+																.addGap(53)
+																.addComponent(
+																		button)
+																.addGap(140))
+												.addGroup(
+														gl_panel.createSequentialGroup()
+																.addGroup(
+																		gl_panel.createParallelGroup(
+																				Alignment.TRAILING)
+																				.addComponent(
+																						jTextField1,
+																						Alignment.LEADING,
+																						GroupLayout.DEFAULT_SIZE,
+																						385,
+																						Short.MAX_VALUE)
+																				.addComponent(
+																						progressBar,
+																						Alignment.LEADING,
+																						GroupLayout.DEFAULT_SIZE,
+																						385,
+																						Short.MAX_VALUE)
+																				.addComponent(
+																						jTextField2,
+																						Alignment.LEADING,
+																						GroupLayout.DEFAULT_SIZE,
+																						385,
+																						Short.MAX_VALUE))
+																.addGap(255))))
+				.addGroup(
+						gl_panel.createSequentialGroup()
+								.addGap(101)
+								.addComponent(scrollPane_1,
+										GroupLayout.PREFERRED_SIZE, 551,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(205, Short.MAX_VALUE)));
+		gl_panel.setVerticalGroup(gl_panel
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_panel.createSequentialGroup()
+								.addGap(47)
+								.addGroup(
+										gl_panel.createParallelGroup(
+												Alignment.BASELINE)
+												.addComponent(jLabel1)
+												.addComponent(
+														jTextField1,
+														GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+								.addGap(27)
+								.addGroup(
+										gl_panel.createParallelGroup(
+												Alignment.BASELINE)
+												.addComponent(jLabel2)
+												.addComponent(
+														jTextField2,
+														GroupLayout.PREFERRED_SIZE,
+														GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+								.addGap(18)
+								.addComponent(progressBar,
+										GroupLayout.PREFERRED_SIZE, 18,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(32)
+								.addGroup(
+										gl_panel.createParallelGroup(
+												Alignment.BASELINE)
+												.addComponent(jButton4)
+												.addComponent(jButton1)
+												.addComponent(jButton2)
+												.addComponent(button))
+								.addGap(10)
+								.addComponent(scrollPane_1,
+										GroupLayout.DEFAULT_SIZE, 210,
+										Short.MAX_VALUE)));
+
+		textArea = new JTextArea();
+		textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
+		scrollPane_1.setViewportView(textArea);
+		textArea.setLineWrap(true);
+		textArea.setEditable(false);
 		panel.setLayout(gl_panel);
 		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(
 				new Component[] { jTextField1, jTextField2, jButton1, jButton2,
@@ -332,6 +394,17 @@ public class test extends javax.swing.JFrame {
 		btnNewButton.setFont(new Font("微软雅黑", Font.BOLD, 29));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if (textField.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "请输入日期");
+					return;
+				}
+				if (JOptionPane.showConfirmDialog(
+						null,
+						"确定删除" + Integer.parseInt(textField.getText()) + "的数据?",
+						"请确认", JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE) != 0) {
+					return;
+				}
 				textArea_1.append("请稍候\n");
 				Elec e = null;
 				try {
@@ -364,24 +437,28 @@ public class test extends javax.swing.JFrame {
 		textArea_1.setFont(new Font("微软雅黑", Font.BOLD, 20));
 		textArea_1.setEditable(false);
 		textArea_1.setLineWrap(true);
-		
+
 		JButton button_1 = new JButton("\u5220\u9664\u4ECA\u65E5\u6570\u636E");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Date r = new Date(System.currentTimeMillis()); // 结果
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				int m = Integer.valueOf(sdf.format(r));
+				if (JOptionPane.showConfirmDialog(null, "确定删除" + m + "的数据?",
+						"请确认", JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE) != 0) {
+					return;
+				}
 				textArea_1.append("请稍候\n");
 				try {
 					d.delete(m);
 					logger.info("删除" + m);
 				} catch (SQLException e1) {
-					textArea_1.append("没有日期为"
-							+ m + "记录"
-							+ "\n错误信息：\n" + e1.getMessage());
+					textArea_1.append("没有日期为" + m + "记录" + "\n错误信息：\n"
+							+ e1.getMessage());
 					logger.error(e1.getMessage());
 					e1.printStackTrace();
-				} 
+				}
 				textArea_1.append("已删除\n" + m);
 			}
 		});
@@ -393,38 +470,43 @@ public class test extends javax.swing.JFrame {
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(215)
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(label)
-								.addComponent(lblNewLabel_1))
-							.addGap(18)
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(386)
-							.addComponent(btnNewButton)
-							.addGap(70)
-							.addComponent(button_1))
-						.addGroup(gl_panel_1.createSequentialGroup()
 							.addGap(192)
-							.addComponent(textArea_1, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(textArea_1, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(button_1, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+							.addGap(10)
+							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_1.createSequentialGroup()
+									.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+										.addComponent(label)
+										.addComponent(lblNewLabel_1))
+									.addGap(18)
+									.addComponent(textField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panel_1.createSequentialGroup()
+									.addGap(233)
+									.addComponent(btnNewButton)))))
 					.addContainerGap(163, Short.MAX_VALUE))
 		);
 		gl_panel_1.setVerticalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(28)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(lblNewLabel_1)
-							.addGap(18)
-							.addComponent(label)
-							.addPreferredGap(ComponentPlacement.RELATED))
+							.addGap(28)
+							.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_panel_1.createSequentialGroup()
+									.addComponent(lblNewLabel_1)
+									.addGap(18)
+									.addComponent(label)
+									.addPreferredGap(ComponentPlacement.RELATED))
+								.addGroup(gl_panel_1.createSequentialGroup()
+									.addComponent(textField, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+									.addGap(30)))
+							.addComponent(btnNewButton))
 						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
-							.addGap(30)))
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnNewButton)
-						.addComponent(button_1))
+							.addGap(46)
+							.addComponent(button_1)))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(textArea_1, GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
 					.addContainerGap())
@@ -481,7 +563,7 @@ public class test extends javax.swing.JFrame {
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		Thread t = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				progressBar.setMaximum(100);
@@ -505,13 +587,15 @@ public class test extends javax.swing.JFrame {
 							.format(new Date(System.currentTimeMillis()))));
 					elec.setYear(Integer.valueOf(new SimpleDateFormat("yyyy")
 							.format(new Date(System.currentTimeMillis()))));
-					elec.setDate((Integer.valueOf(new SimpleDateFormat("yyyyMMdd")
-							.format(new Date(System.currentTimeMillis())))));
+					elec.setDate((Integer.valueOf(new SimpleDateFormat(
+							"yyyyMMdd").format(new Date(System
+							.currentTimeMillis())))));
 					elec.setInputelec(inputelec);
 					used = 0;
 					dao = new ElecDAO();
 					Elec be = dao.getBefore(Integer.valueOf(new SimpleDateFormat(
-							"yyyyMMdd").format(new Date(System.currentTimeMillis()))));
+							"yyyyMMdd").format(new Date(System
+							.currentTimeMillis()))));
 					if (elecnum < be.getElecnum()) {
 						used = be.getElecnum() - elecnum; // 一般情況，或者先讀數后充值
 					} else {
@@ -535,8 +619,8 @@ public class test extends javax.swing.JFrame {
 							.format(new Date(System.currentTimeMillis()))));
 					textArea.append("本月平均每日用电：" + (monthsum) / avg + "\n");
 					progressBar.setValue(60);
-					logger.info("Today elecnum = " + elecnum + "  used = " + used
-							+ "  input = " + inputelec + " Avg = " + avg);
+					logger.info("Today elecnum = " + elecnum + "  used = "
+							+ used + "  input = " + inputelec + " Avg = " + avg);
 					progressBar.setValue(70);
 				} catch (Exception e) {
 					logger.error(e.getMessage());
@@ -544,10 +628,11 @@ public class test extends javax.swing.JFrame {
 							"Duplicate entry '(.*?)' for key 'PRIMARY'")) {
 						textArea.append("失败\n失败原因:今日已经输入过了\n");
 					} else {
-						textArea.append("失败\n无法预料的失败原因:" + e.getMessage() + "\n");
+						textArea.append("失败\n无法预料的失败原因:" + e.getMessage()
+								+ "\n");
 					}
-					new JavaMail().doSendHtmlEmail("输入失败",
-							e.getMessage() + "\n" + elec.toString(), "63388@qq.com");
+					new JavaMail().doSendHtmlEmail("输入失败", e.getMessage()
+							+ "\n" + elec.toString(), "63388@qq.com");
 				}
 				textArea.append("正在刷新表格和图表，请稍候。");
 				MakeChart c = new MakeChart();
@@ -564,7 +649,8 @@ public class test extends javax.swing.JFrame {
 				for (int i = 0; i < list.size(); i++) {
 					Elec e = list.get(i);
 					tableData[i] = new Object[] { e.getYear(), e.getMonth(),
-							e.getDay(), e.getUsed(), e.getElecnum(), e.getInputelec() };
+							e.getDay(), e.getUsed(), e.getElecnum(),
+							e.getInputelec() };
 				}
 				table_1 = new JTable(tableData, columnTitle);
 				table_1.setFont(new Font("Segoe UI", Font.BOLD, 17));
@@ -578,11 +664,12 @@ public class test extends javax.swing.JFrame {
 				try {
 					commitcode = commiter.commit(elec);
 				} catch (HttpException e) {
-					logger.error("\n网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
-					textArea.append("\n由于网络异常\n异常原因:\n" + e.getMessage()+"同步失败");
+					logger.error("\n网络异常\n异常原因:\n" + e.getMessage() + "同步失败");
+					textArea.append("\n由于网络异常\n异常原因:\n" + e.getMessage()
+							+ "同步失败");
 				} catch (IOException e) {
-					logger.error("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
-					textArea.append("\n未知异常\n异常原因:\n" + e.getMessage()+"同步失败");
+					logger.error("\n未知异常\n异常原因:\n" + e.getMessage() + "同步失败");
+					textArea.append("\n未知异常\n异常原因:\n" + e.getMessage() + "同步失败");
 				}
 				progressBar.setValue(90);
 				String info = "";
@@ -608,11 +695,10 @@ public class test extends javax.swing.JFrame {
 				logger.info("向数据库同步时数据,结果: " + info);
 				textArea.append(info);
 				progressBar.setValue(100);
-				
+
 			}
 		});
 		t.start();
-		
 
 	}
 
@@ -622,8 +708,8 @@ public class test extends javax.swing.JFrame {
 		ImageIcon icon = new ImageIcon("images/elec.gif"); // 将要显示到托盘中的图标
 
 		PopupMenu pop = new PopupMenu(); // 构造一个右键弹出式菜单
-		MenuItem show = new MenuItem("打开程序(s)");
-		MenuItem exit = new MenuItem("退出程序(x)");
+		MenuItem show = new MenuItem("打开程序");
+		MenuItem exit = new MenuItem("退出程序");
 		pop.add(show);
 		pop.add(exit);
 		trayIcon = new TrayIcon(icon.getImage(), "电量管理系统", pop);
