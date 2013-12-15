@@ -62,6 +62,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 /**
  * 
@@ -98,6 +99,7 @@ public class test extends javax.swing.JFrame {
 
 	/** Creates new form test */
 	public test() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(test.class.getResource("/images/elec.gif")));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowIconified(WindowEvent arg0) {
